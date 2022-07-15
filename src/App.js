@@ -1,12 +1,25 @@
+import {Route, Routes, useRoutes} from "react-router";
+
+import Login from "./pages/login";
+import Admin from "./pages/admin";
+
+import routingTable from "./utils/routingTable";
+
 import './App.css';
-import {Button} from "antd";
 
 function App() {
-  return (
-    <div className="App">
-      <Button type='primary'>Welcome</Button>
-    </div>
-  );
+    
+    const elements = useRoutes(routingTable);
+    
+    return (
+        <div className="App">
+            {elements}
+            {/* <Routes> */}
+            {/*     <Route path='/login' element={<Login/>} /> */}
+            {/*     <Route path='/admin' element={<Admin/>} /> */}
+            {/* </Routes> */}
+        </div>
+    );
 }
 
 export default App;
