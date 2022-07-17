@@ -1,29 +1,53 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import {useNavigate} from "react-router";
 import {
 	Card,
 	Input,
 	Button,
 	Spin,
-	Space
+	Space,
+	message
 } from 'antd'
 import {
 	UserOutlined
 } from '@ant-design/icons'
 
+import storageUtils from "../utils/storageUtils";
+import {reqLogin} from "../api/api";
+
+
 import '../static/css/login.css'
 
 function Login() {
+	
+	const navigate = useNavigate();
 	
 	const [ username, setUsername ] = useState('');
 	const [ password, setPassword ] = useState('');
 	const [ isLoading, setIsLoading ] = useState(false); // 防止重复加载
 	
-	const checkLogin = () => {
+	const checkLogin = async () => {
 		setIsLoading(true); // 防止重复加载
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 1000)
+		// 1. 发送ajax请求，登录验证
+		const result = await reqLogin(username, password);
+		setIsLoading(false);
+		if (result.status === 0) { // 登录成功
+			// 2. 使用localStorage存储用户信息
+			storageUtils.saveUser(result.data);
+			// 3. 跳转到管理系统主页面
+			navigate('/admin');
+		} else {
+			message.error("登录失败：" + result.error);
+		}
 	}
+	
+	// componentDidMount
+	useEffect(() => {
+		// 如果localStorage已经存储登录状态，则直接跳转到主页面
+		if (JSON.stringify(storageUtils.getUser()) !== '{}') {
+			navigate('/admin');
+		}
+	}, [])
 	
 	return (
 		<div className='blog-login'>

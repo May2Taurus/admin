@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
 	Row,
 	Col,
@@ -6,9 +6,12 @@ import {
 	Select,
 	Space,
 	Button,
-	DatePicker
+	DatePicker,
+	message
 } from 'antd'
 import {marked} from "marked";
+
+import {reqTypeList, reqAddArticle} from "../api/api";
 
 import '../static/css/addArticle.css'
 
@@ -23,10 +26,10 @@ function AddArticle() {
 	const [markdownContent, setMarkdownContent] = useState('预览内容') //html内容
 	const [introduceMD, setIntroduceMD] = useState()            //简介的markdown内容
 	const [introduceHtml, setIntroduceHtml] = useState('等待编辑') //简介的html内容
-	const [showDate, setShowDate] = useState()   //发布日期
+	const [showDate, setShowDate] = useState('')   //发布日期
 	const [updateDate, setUpdateDate] = useState() //修改日志的日期
 	const [typeInfo, setTypeInfo] = useState([]) // 文章类别信息
-	const [selectedType, setSelectType] = useState(1) //选择的文章类别
+	const [selectedType, setSelectType] = useState("请选择类别") //选择的文章类别
 	
 	marked.setOptions({
 		renderer: new marked.Renderer(),
@@ -53,18 +56,75 @@ function AddArticle() {
 		setIntroduceHtml(html);
 	}
 	
+	const getTypeList = async () => {
+		const result = await reqTypeList();
+		if (result.status === 0) {
+			setTypeInfo(result.data);
+		}
+	}
+	
+	// 发送请求保存文章到数据库
+	const saveArticle = async () => {
+		// 1. 判断文章各项属性是否不为空
+		if (!articleTitle) {
+			message.error('文章名称不能为空');
+			return false;
+		} else if (!articleContent) {
+			message.error('文章内容不能为空');
+			return false;
+		} else if (!showDate) {
+			message.error('请选择发布日期');
+			return false;
+		} else if (typeInfo.find((type) => type.id === selectedType) === undefined) {
+			message.error('请选择正确的文章类型');
+			return false;
+		}
+		// 2. 类型转化
+		const article = {
+			typeId: selectedType,
+			title: articleTitle,
+			introduction: introduceMD,
+			content: articleContent,
+			createTime: new Date(showDate).getTime()
+		};
+		console.log(article);
+		// 3. 发送请求
+		const result = await reqAddArticle(article);
+		if (result.status === 0) {
+			message.success('添加成功');
+		} else {
+			message.error('添加失败');
+			console.log(result.error);
+		}
+		return true;
+	}
+	
+	// componentDidMount
+	useEffect(() => {
+		// 1. 获取所有类别信息
+		getTypeList();
+	}, []);
+	
 	return (
 		<div>
 			<Row gutter={5}>
+				{/* 左侧文章内容 */}
 				<Col span={18}>
 					<Space direction='vertical' size='large' style={{display: 'flex'}}>
 						<Row gutter={10}>
 							<Col span={20}>
-								<Input placeholder='博客标题' size='middle'/>
+								<Input
+									value={articleTitle}
+									placeholder='博客标题'
+									size='middle'
+									onChange={e => {setArticleTitle(e.target.value)}}
+								/>
 							</Col>
 							<Col span={4}>
-								<Select defaultValue='1' size='middle'>
-									<Option value='1'>Web前端</Option>
+								<Select defaultValue={selectedType} size='middle' onChange={(value) => {setSelectType(value)}}>
+									{
+										typeInfo.map(item => <Option value={item.id} key={item.id}>{item.typeName}</Option>)
+									}
 								</Select>
 							</Col>
 						</Row>
@@ -87,13 +147,14 @@ function AddArticle() {
 						</Row>
 					</Space>
 				</Col>
+				{/* 右侧文章其他属性，以及发布文章功能 */}
 				<Col span={6}>
 					<Space direction='vertical' size='large' style={{display: 'flex'}}>
 						<Row>
 							<Col span={24}>
 								<Space size='small'>
 									<Button size='middle'>暂存文章</Button>
-									<Button type='primary' size='middle'>保存文章</Button>
+									<Button type='primary' size='middle' onClick={saveArticle}>保存文章</Button>
 								</Space>
 							</Col>
 						</Row>
@@ -115,6 +176,7 @@ function AddArticle() {
 								<Col className='top-small-gap' span={12}>
 									<div className='date-select'>
 										<DatePicker
+											onChange={(date, dateString)=>{setShowDate(dateString)}}
 											placeholder='发布日期'
 											size='middle'
 										/>

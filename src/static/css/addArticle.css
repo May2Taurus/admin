@@ -7,7 +7,7 @@
     border:1px solid #ddd;
     border-radius: 5px;
     font-size:16px;
-    min-height: 512px;
+    height: 512px;
     background-color: #f0f0f0;
     overflow: auto;
 }

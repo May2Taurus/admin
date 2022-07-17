@@ -14,10 +14,6 @@ function App() {
     return (
         <div className="App">
             {elements}
-            {/* <Routes> */}
-            {/*     <Route path='/login' element={<Login/>} /> */}
-            {/*     <Route path='/admin' element={<Admin/>} /> */}
-            {/* </Routes> */}
         </div>
     );
 }

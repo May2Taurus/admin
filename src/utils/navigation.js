@@ -1,38 +1,44 @@
 import {Link} from "react-router-dom";
 import {
-	DesktopOutlined,
-	PieChartOutlined,
+	HomeOutlined,
+	FileMarkdownOutlined,
+	CommentOutlined,
 	UserOutlined,
+	SettingOutlined
 } from '@ant-design/icons';
-
-import AddArticle from "../pages/addArticle";
 
 // 后台左侧导航栏结构
 const NavList = [
 	{
-		label: <Link to='/admin/home'>工作台</Link>,
-		key: '1',
-		icon: <PieChartOutlined />
+		label: <Link to='/admin/home'>主页</Link>,
+		key: '/admin/home',
+		icon: <HomeOutlined />
 	},
 	{
-		label: <Link to='/admin/add-article'>添加文章</Link>,
+		label: <Link to='/admin/add-article'>文章管理</Link>,
 		key: '2',
-		icon: <DesktopOutlined />
-	},
-	{
-		label: '文章管理',
-		key: 'sub1',
-		icon: <UserOutlined />,
+		icon: <FileMarkdownOutlined />,
 		children: [
-			{label: '添加文章', key: '3'},
-			{label: '文章列表', key: '4'},
+			{label: <Link to='/admin/article/list'>文章列表</Link>, key: '/admin/article/list',},
+			{label: <Link to='/admin/article/add'>写文章</Link>, key: '/admin/article/add',},
+			{label: <Link to='/admin/type'>类别管理</Link>, key: '/admin/type'},
 		]
 	},
 	{
-		label: '评论管理',
-		key: '6',
-		icon: <DesktopOutlined />
+		label: <Link to='/admin/comment'>评论管理</Link>,
+		key: '/admin/type',
+		icon: <CommentOutlined />,
 	},
+	{
+		label: <Link to='/admin/user'>用户管理</Link>,
+		key: '/admin/user',
+		icon: <UserOutlined />
+	},
+	{
+		label: <Link to='/admin/setting'>设置</Link>,
+		key: '/admin/setting',
+		icon: <SettingOutlined />
+	}
 ]
 
 export default NavList;
