@@ -15,8 +15,8 @@ const NavList = [
 		icon: <HomeOutlined />
 	},
 	{
-		label: <Link to='/admin/add-article'>文章管理</Link>,
-		key: '2',
+		label: '文章管理',
+		key: 'sub1',
 		icon: <FileMarkdownOutlined />,
 		children: [
 			{label: <Link to='/admin/article/list'>文章列表</Link>, key: '/admin/article/list',},
@@ -26,7 +26,7 @@ const NavList = [
 	},
 	{
 		label: <Link to='/admin/comment'>评论管理</Link>,
-		key: '/admin/type',
+		key: '/admin/comment',
 		icon: <CommentOutlined />,
 	},
 	{

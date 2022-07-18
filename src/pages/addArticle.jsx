@@ -85,7 +85,8 @@ function AddArticle() {
 			title: articleTitle,
 			introduction: introduceMD,
 			content: articleContent,
-			createTime: new Date(showDate).getTime()
+			createTime: new Date(showDate).getTime(),
+			lastUpdateTime: new Date(showDate).getTime()
 		};
 		console.log(article);
 		// 3. 发送请求

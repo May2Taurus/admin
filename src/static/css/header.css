@@ -1,0 +1,12 @@
+.header {
+    display: flex;
+    justify-content: right;
+}
+
+.header-user {
+    margin-right: 2rem;
+}
+
+.header-logout {
+    margin-right: 2rem;
+}
